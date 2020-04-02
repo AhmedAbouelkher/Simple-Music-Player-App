@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_music_player/appTheme.dart';
-import 'package:simple_music_player/models/songs.dart';
+import 'package:simple_music_player/models/songs_control_panel.dart';
 import 'package:simple_music_player/widgets/button.dart';
 import 'package:simple_music_player/widgets/song_avatar.dart';
 import 'package:simple_music_player/widgets/song_brain.dart';
@@ -12,28 +12,33 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    ScrollController _controler = ScrollController();
-    void _printPostion() {
-      var position = _controler.position.pixels;
-      // print("Position: $position");
+    ScrollController _controller = ScrollController();
+    void _scrollContollerAction() {
+      var position = _controller.position.pixels;
       if (position > 265) {
-        Provider.of<ShowUpperAppbar>(context, listen: false).showTopAppBar();
+        Provider.of<ShowAppbars>(context, listen: false).showTopAppBar();
       } else {
-        Provider.of<ShowUpperAppbar>(context, listen: false).hideTopAppBar();
+        Provider.of<ShowAppbars>(context, listen: false).hideTopAppBar();
+      }
+      if (position == _controller.position.maxScrollExtent) {
+        Provider.of<ShowAppbars>(context, listen: false).hideBottomAppBar();
+      } else {
+        Provider.of<ShowAppbars>(context, listen: false).showBottomAppBar();
       }
     }
 
-    bool show = Provider.of<ShowUpperAppbar>(context).show;
+    bool showTopAppBar = Provider.of<ShowAppbars>(context).showTopAppbar;
+    bool showbottomAppBar = Provider.of<ShowAppbars>(context).showBottomAppbar;
     return Scaffold(
       backgroundColor: Color(0xFF343A3F),
       body: Stack(
         children: <Widget>[
           NotificationListener<ScrollUpdateNotification>(
             onNotification: (_) {
-              _printPostion();
+              _scrollContollerAction();
             },
             child: CustomScrollView(
-              controller: _controler,
+              controller: _controller,
               slivers: <Widget>[
                 SliverPersistentHeader(
                   delegate: SongPlayingHeader(),
@@ -45,7 +50,7 @@ class HomeScreen extends StatelessWidget {
           ),
           AnimatedOpacity(
             duration: Duration(milliseconds: 400),
-            opacity: show ? 1 : 0,
+            opacity: showTopAppBar ? 1 : 0,
             child: Align(
               alignment: Alignment.topCenter,
               child: Material(
@@ -60,23 +65,29 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 70,
-              width: screenWidth,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppTheme().primaryColor.withOpacity(0.2),
-                    AppTheme().primaryColor.withOpacity(0.8),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          showbottomAppBar
+              ? AnimatedOpacity(
+                  opacity: showbottomAppBar ? 1 : 0,
+                  duration: Duration(milliseconds: 400),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 70,
+                      width: screenWidth,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppTheme().primaryColor.withOpacity(0.2),
+                            AppTheme().primaryColor.withOpacity(0.8),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -183,15 +194,26 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
   OverScrollHeaderStretchConfiguration get stretchConfiguration => null;
 }
 
-class ShowUpperAppbar extends ChangeNotifier {
-  bool show = false;
+class ShowAppbars extends ChangeNotifier {
+  bool showTopAppbar = false;
+  bool showBottomAppbar = true;
   void showTopAppBar() {
-    show = true;
+    showTopAppbar = true;
     notifyListeners();
   }
 
   void hideTopAppBar() {
-    show = false;
+    showTopAppbar = false;
+    notifyListeners();
+  }
+
+  void showBottomAppBar() {
+    showBottomAppbar = true;
+    notifyListeners();
+  }
+
+  void hideBottomAppBar() {
+    showBottomAppbar = false;
     notifyListeners();
   }
 }

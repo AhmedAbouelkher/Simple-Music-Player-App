@@ -46,6 +46,24 @@ class SongsControlPanel extends ChangeNotifier {
       songPath: 'music/bensound-creativeminds.mp3',
       songCoverPath: 'assets/cover/creativeminds.jpg',
     ),
+    Song(
+      songName: 'Summer',
+      songSubName: 'Benjamin Tissot',
+      songPath: 'music/bensound-summer.mp3',
+      songCoverPath: 'assets/cover/summer.jpg',
+    ),
+    Song(
+      songName: 'Little Idea',
+      songSubName: 'Benjamin Tissot',
+      songPath: 'music/bensound-littleidea.mp3',
+      songCoverPath: 'assets/cover/littleidea.jpg',
+    ),
+    Song(
+      songName: 'Ukulele',
+      songSubName: 'Benjamin Tissot',
+      songPath: 'music/bensound-ukulele.mp3',
+      songCoverPath: 'assets/cover/ukulele.jpg',
+    ),
   ];
 
   UnmodifiableListView<Song> get songs {
