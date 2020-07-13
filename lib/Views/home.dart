@@ -31,64 +31,74 @@ class HomeScreen extends StatelessWidget {
     bool showbottomAppBar = Provider.of<ShowAppbars>(context).showBottomAppbar;
     return Scaffold(
       backgroundColor: Color(0xFF343A3F),
-      body: Stack(
-        children: <Widget>[
-          NotificationListener<ScrollUpdateNotification>(
-            onNotification: (_) {
-              _scrollContollerAction();
-            },
-            child: CustomScrollView(
-              controller: _controller,
-              slivers: <Widget>[
-                SliverPersistentHeader(
-                  delegate: SongPlayingHeader(),
-                ),
-                SliverToBoxAdapter(),
-                SongsListBuilder(),
-              ],
+      appBar: PreferredSize(
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          brightness: Brightness.dark,
+        ),
+        preferredSize: Size.fromHeight(0),
+      ),
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            NotificationListener<ScrollUpdateNotification>(
+              onNotification: (_) {
+                _scrollContollerAction();
+              },
+              child: CustomScrollView(
+                controller: _controller,
+                slivers: <Widget>[
+                  SliverPersistentHeader(
+                    delegate: SongPlayingHeader(),
+                  ),
+                  SliverToBoxAdapter(),
+                  SongsListBuilder(),
+                ],
+              ),
             ),
-          ),
-          AnimatedOpacity(
-            duration: Duration(milliseconds: 400),
-            opacity: showTopAppBar ? 1 : 0,
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Material(
-                elevation: 10,
-                child: Container(
-                  height: screenHeight * 0.034,
-                  width: screenWidth,
-                  decoration: BoxDecoration(
-                    color: AppTheme().primaryColor,
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 400),
+              opacity: showTopAppBar ? 1 : 0,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Material(
+                  elevation: 10,
+                  child: Container(
+                    height: screenHeight * 0.034,
+                    width: screenWidth,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          showbottomAppBar
-              ? AnimatedOpacity(
-                  opacity: showbottomAppBar ? 1 : 0,
-                  duration: Duration(milliseconds: 400),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 70,
-                      width: screenWidth,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            AppTheme().primaryColor.withOpacity(0.2),
-                            AppTheme().primaryColor.withOpacity(0.8),
-                          ],
+            showbottomAppBar
+                ? AnimatedOpacity(
+                    opacity: showbottomAppBar ? 1 : 0,
+                    duration: Duration(milliseconds: 400),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 70,
+                        width: screenWidth,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppTheme.primaryColor.withOpacity(0.2),
+                              AppTheme.primaryColor.withOpacity(0.8),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              : Container(),
-        ],
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
   }
@@ -125,9 +135,9 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
               scale: textScale,
               child: Text(
                 '\n\n' + 'EVOL - FUTURE',
-                style: AppTheme().mainTextStyle.copyWith(
-                      fontSize: 12,
-                    ),
+                style: AppTheme.mainTextStyle.copyWith(
+                  fontSize: 12,
+                ),
               ),
             ),
           ),

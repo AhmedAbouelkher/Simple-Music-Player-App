@@ -41,7 +41,7 @@ class SongAvatar extends StatelessWidget {
         radius: radius,
       ),
       decoration: BoxDecoration(
-        color: AppTheme().primaryColor,
+        color: AppTheme.primaryColor,
         borderRadius: BorderRadius.circular(radius),
         boxShadow: [
           BoxShadow(

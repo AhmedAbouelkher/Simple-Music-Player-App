@@ -92,7 +92,7 @@ class _PlayerState extends State<Player> with AfterLayoutMixin<Player> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme().primaryColor,
+      backgroundColor: AppTheme.primaryColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,7 +107,6 @@ class _PlayerState extends State<Player> with AfterLayoutMixin<Player> {
                     buttonRadius: 23,
                     icon: Icons.arrow_back,
                     onTap: () {
-                      print("Back");
                       stop();
                       Navigator.pop(context);
                     },
@@ -117,8 +116,7 @@ class _PlayerState extends State<Player> with AfterLayoutMixin<Player> {
                     opacity: 0.8,
                     child: Text(
                       'PLAYING NOW',
-                      style: AppTheme()
-                          .mainTextStyle
+                      style: AppTheme.mainTextStyle
                           .copyWith(fontSize: 12, fontWeight: FontWeight.w500),
                     ),
                   ),
@@ -127,8 +125,8 @@ class _PlayerState extends State<Player> with AfterLayoutMixin<Player> {
                     icon: Icons.menu,
                     iconSize: 19,
                     onTap: () {
-                      print("More");
                       stop();
+                      Navigator.pop(context);
                     },
                   ),
                 ],
@@ -163,7 +161,7 @@ class _PlayerState extends State<Player> with AfterLayoutMixin<Player> {
                   SizedBox(height: 5),
                   Text(
                     widget.songSubName,
-                    style: AppTheme().mainTextStyle.copyWith(fontSize: 15),
+                    style: AppTheme.mainTextStyle.copyWith(fontSize: 15),
                   ),
                 ],
               ),

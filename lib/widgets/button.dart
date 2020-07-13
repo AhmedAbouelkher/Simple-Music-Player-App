@@ -33,11 +33,7 @@ class AudioPlayerButton extends StatelessWidget {
     return InkWell(
       splashColor: Colors.transparent,
       borderRadius: BorderRadius.circular(buttonRadius), //buttonRadius
-      onTap: disable
-          ? null
-          : () {
-              onTap();
-            },
+      onTap: disable ? null : onTap,
       child: Container(
         height: buttonRadius * 2, //buttonRadius * 2
         width: buttonRadius * 2, //buttonRadius * 2

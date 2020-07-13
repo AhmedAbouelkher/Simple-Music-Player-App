@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_music_player/Views/player.dart';
 import 'package:simple_music_player/models/page_transtion.dart';
 import 'package:simple_music_player/models/songs_control_panel.dart';
-import 'package:simple_music_player/sceeens/player.dart';
 import 'package:simple_music_player/widgets/button.dart';
 import '../appTheme.dart';
 
@@ -101,19 +101,19 @@ class SongCard extends StatelessWidget {
           child: ListTile(
             title: Text(
               songName,
-              style: AppTheme().mainTextStyle.copyWith(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 18,
-                    color: Colors.white.withOpacity(0.7),
-                  ),
+              style: AppTheme.mainTextStyle.copyWith(
+                fontWeight: FontWeight.w400,
+                fontSize: 18,
+                color: Colors.white.withOpacity(0.7),
+              ),
             ),
             subtitle: Text(
               songSubName,
-              style: AppTheme().mainTextStyle.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white70.withOpacity(0.5),
-                  ),
+              style: AppTheme.mainTextStyle.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Colors.white70.withOpacity(0.5),
+              ),
             ),
             trailing: AudioPlayerButton(
               disable: isSelected ? false : true,

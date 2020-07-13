@@ -34,10 +34,10 @@ class PlayerSlider extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     playerPosition,
-                    style: AppTheme().mainTextStyle.copyWith(fontSize: 11),
+                    style: AppTheme.mainTextStyle.copyWith(fontSize: 11),
                   ),
                   Text(playerDuration,
-                      style: AppTheme().mainTextStyle.copyWith(fontSize: 11)),
+                      style: AppTheme.mainTextStyle.copyWith(fontSize: 11)),
                 ],
               ),
             ),

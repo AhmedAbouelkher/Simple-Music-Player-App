@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:simple_music_player/Views/home.dart';
 import 'package:simple_music_player/appTheme.dart';
-import 'package:simple_music_player/sceeens/home.dart';
-
 import 'models/songs_control_panel.dart';
 
 void main() => runApp(MyApp());
@@ -19,8 +18,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: AppTheme().primaryColor,
-          accentColor: AppTheme().primaryColor,
+          primaryColor: AppTheme.primaryColor,
+          accentColor: AppTheme.primaryColor,
           brightness: Brightness.dark,
         ),
         home: HomeScreen(),
