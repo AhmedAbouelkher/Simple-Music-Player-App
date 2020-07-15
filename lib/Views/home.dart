@@ -1,32 +1,38 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_music_player/Models/songs_control_panel.dart';
 import 'package:simple_music_player/appTheme.dart';
-import 'package:simple_music_player/models/songs_control_panel.dart';
 import 'package:simple_music_player/widgets/button.dart';
 import 'package:simple_music_player/widgets/song_avatar.dart';
 import 'package:simple_music_player/widgets/song_brain.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  ScrollController _controller;
+  AssetsAudioPlayer _assetsAudioPlayer;
+  @override
+  void initState() {
+    _controller = ScrollController();
+    _assetsAudioPlayer = AssetsAudioPlayer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    ScrollController _controller = ScrollController();
-    void _scrollContollerAction() {
-      var position = _controller.position.pixels;
-      if (position > 265) {
-        Provider.of<ShowAppbars>(context, listen: false).showTopAppBar();
-      } else {
-        Provider.of<ShowAppbars>(context, listen: false).hideTopAppBar();
-      }
-      if (position == _controller.position.maxScrollExtent) {
-        Provider.of<ShowAppbars>(context, listen: false).hideBottomAppBar();
-      } else {
-        Provider.of<ShowAppbars>(context, listen: false).showBottomAppBar();
-      }
-    }
-
     bool showTopAppBar = Provider.of<ShowAppbars>(context).showTopAppbar;
     bool showbottomAppBar = Provider.of<ShowAppbars>(context).showBottomAppbar;
     return Scaffold(
@@ -45,6 +51,7 @@ class HomeScreen extends StatelessWidget {
             NotificationListener<ScrollUpdateNotification>(
               onNotification: (_) {
                 _scrollContollerAction();
+                return true;
               },
               child: CustomScrollView(
                 controller: _controller,
@@ -53,7 +60,9 @@ class HomeScreen extends StatelessWidget {
                     delegate: SongPlayingHeader(),
                   ),
                   SliverToBoxAdapter(),
-                  SongsListBuilder(),
+                  SongsListBuilder(
+                    assetsAudioPlayer: _assetsAudioPlayer,
+                  ),
                 ],
               ),
             ),
@@ -101,6 +110,20 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _scrollContollerAction() {
+    var position = _controller.position.pixels;
+    if (position > 265) {
+      Provider.of<ShowAppbars>(context, listen: false).showTopAppBar();
+    } else {
+      Provider.of<ShowAppbars>(context, listen: false).hideTopAppBar();
+    }
+    if (position == _controller.position.maxScrollExtent) {
+      Provider.of<ShowAppbars>(context, listen: false).hideBottomAppBar();
+    } else {
+      Provider.of<ShowAppbars>(context, listen: false).showBottomAppBar();
+    }
   }
 }
 
@@ -163,9 +186,11 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
                 Opacity(
                   opacity: sideButtonsOpacity,
                   child: SongAvatar(
-                    songCoverPath: Provider.of<SongsControlPanel>(context)
-                            .tempSongCoverPath ??
-                        'assets/fire_flower.jpg',
+                    //TODO: fix song image path.
+                    // songCoverPath: Provider.of<SongsControlPanel>(context)
+                    //         .tempSongCoverPath ??
+                    //     'assets/fire_flower.jpg',
+                    songCoverPath: "assets/fire_flower.jpg",
                     radius:
                         _calculateShrinking(shrinkOffset, 80, speedFactor: 1.8),
                     imagePadding: 4,

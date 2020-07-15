@@ -10,10 +10,10 @@ name: simple_music_player
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -26,6 +26,8 @@ dependencies:
   flutter_playout:
   audioplayers: ^0.14.2
   after_layout: ^1.0.7+2
+  audio_service: ^0.11.2
+  assets_audio_player: ^2.0.8+2
 
 dev_dependencies:
   flutter_test:

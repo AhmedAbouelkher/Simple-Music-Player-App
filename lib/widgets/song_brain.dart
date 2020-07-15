@@ -1,7 +1,6 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_music_player/Views/player.dart';
-import 'package:simple_music_player/models/page_transtion.dart';
 import 'package:simple_music_player/models/songs_control_panel.dart';
 import 'package:simple_music_player/widgets/button.dart';
 import '../appTheme.dart';
@@ -13,6 +12,10 @@ const List<Color> colorGrad = [
 ];
 
 class SongsListBuilder extends StatelessWidget {
+  final AssetsAudioPlayer assetsAudioPlayer;
+
+  const SongsListBuilder({Key key, @required this.assetsAudioPlayer})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Consumer<SongsControlPanel>(
@@ -21,35 +24,42 @@ class SongsListBuilder extends StatelessWidget {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final song = songData.songs[index];
-              void _printReport() {
-                print("Current Index: $index, isPlaying: ${song.isPlaying}");
-              }
+              // void _printReport() {
+              //   print("Current Index: $index, isPlaying: ${song.isPlaying}");
+              // }
 
-              return SongCard(
-                songName: song.songName,
-                songSubName: song.songSubName,
-                onTap: () {
-                  songData.selectSong(index);
-                  songData.playSong(index);
-                  songData.changeHomeCover(index);
-                  _printReport();
-                  Navigator.of(context).push(
-                    createRoute(
-                      Player(
-                        songName: song.songName,
-                        songSubName: song.songSubName,
-                        songFilePath: song.songPath,
-                        songCoverPath: song.songCoverPath,
-                      ),
-                    ),
+              return songData.assetsAudioPlayer.builderCurrent(
+                builder: (context, playing) {
+                  final bool isSelected = "assets/" + song.songPath ==
+                      playing?.audio?.assetAudioPath;
+                  return SongCard(
+                    songName: song.songName,
+                    songSubName: song.songSubName,
+                    onTap: () {
+                      if (!isSelected) {
+                        songData.play(index);
+                        songData.stop();
+                      } else {
+                        songData.playSong(index);
+                      }
+                      // Navigator.of(context).push(
+                      //   createRoute(
+                      //     Player(
+                      //       songName: song.songName,
+                      //       songSubName: song.songSubName,
+                      //       songFilePath: song.songPath,
+                      //       songCoverPath: song.songCoverPath,
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                    isSelected: isSelected,
+                    onTapButton: () {
+                      songData.playSong(index);
+                    },
+                    togglePlay: song.isPlaying,
                   );
                 },
-                isSelected: song.isSelected,
-                onTapButton: () {
-                  songData.playSong(index);
-                  _printReport();
-                },
-                togglePlay: song.isPlaying,
               );
             },
             childCount: songData.songs.length,

@@ -1,8 +1,12 @@
 import 'dart:collection';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:simple_music_player/models/song.dart';
+import 'package:simple_music_player/Models/song.dart';
 
 class SongsControlPanel extends ChangeNotifier {
+  final AssetsAudioPlayer _assetsAudioPlayer;
+  SongsControlPanel(this._assetsAudioPlayer);
+  AssetsAudioPlayer get assetsAudioPlayer => _assetsAudioPlayer;
   List<Song> _songs = [
     Song(
       songName: 'Little Idea',
@@ -46,24 +50,24 @@ class SongsControlPanel extends ChangeNotifier {
       songPath: 'music/bensound-creativeminds.mp3',
       songCoverPath: 'assets/cover/creativeminds.jpg',
     ),
-    Song(
-      songName: 'Summer',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-summer.mp3',
-      songCoverPath: 'assets/cover/summer.jpg',
-    ),
-    Song(
-      songName: 'Little Idea',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-littleidea.mp3',
-      songCoverPath: 'assets/cover/littleidea.jpg',
-    ),
-    Song(
-      songName: 'Ukulele',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-ukulele.mp3',
-      songCoverPath: 'assets/cover/ukulele.jpg',
-    ),
+    // Song(
+    //   songName: 'Summer',
+    //   songSubName: 'Benjamin Tissot',
+    //   songPath: 'music/bensound-summer.mp3',
+    //   songCoverPath: 'assets/cover/summer.jpg',
+    // ),
+    // Song(
+    //   songName: 'Little Idea',
+    //   songSubName: 'Benjamin Tissot',
+    //   songPath: 'music/bensound-littleidea.mp3',
+    //   songCoverPath: 'assets/cover/littleidea.jpg',
+    // ),
+    // Song(
+    //   songName: 'Ukulele',
+    //   songSubName: 'Benjamin Tissot',
+    //   songPath: 'music/bensound-ukulele.mp3',
+    //   songCoverPath: 'assets/cover/ukulele.jpg',
+    // ),
   ];
 
   UnmodifiableListView<Song> get songs {
@@ -73,26 +77,40 @@ class SongsControlPanel extends ChangeNotifier {
   int prevInedx = 0;
   bool isStarted = false;
   void selectSong(int index) {
-    _songs[index].toggleSelect();
     if (!isStarted) {
       prevInedx = index;
       isStarted = true;
     } else if (isStarted) {
-      _songs[prevInedx].toggleSelect();
-      _songs[prevInedx].togglePlay();
+      final song = _songs[prevInedx];
+      if (song.isPlaying) song.togglePlay();
       prevInedx = index;
     }
     notifyListeners();
   }
 
-  void playSong(int index) {
-    _songs[index].togglePlay();
+  void playSong(int index) async {
+    songs[index].togglePlay();
+    await this._assetsAudioPlayer?.playOrPause();
     notifyListeners();
   }
 
   String tempSongCoverPath;
   void changeHomeCover(int index) {
-    tempSongCoverPath = _songs[index].songCoverPath;
+    tempSongCoverPath = songs[index].songCoverPath;
     notifyListeners();
+  }
+
+  void play(int index) async {
+    selectSong(index);
+    playSong(index);
+    changeHomeCover(index);
+    await this._assetsAudioPlayer?.open(
+          Audio("assets/" + songs[index].songPath),
+          autoStart: true,
+        );
+  }
+
+  void stop() async {
+    await this._assetsAudioPlayer?.stop();
   }
 }

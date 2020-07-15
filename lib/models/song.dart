@@ -6,11 +6,9 @@ class Song {
     @required this.songSubName,
     this.songPath,
     this.isPlaying = false,
-    this.isSelected = false,
     this.songCoverPath,
   });
   bool isPlaying;
-  bool isSelected;
   final String songName;
   final String songSubName;
   final String songPath;
@@ -18,9 +16,5 @@ class Song {
 
   void togglePlay() {
     isPlaying = !isPlaying;
-  }
-
-  void toggleSelect() {
-    isSelected = !isSelected;
   }
 }

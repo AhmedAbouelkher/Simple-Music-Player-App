@@ -28,18 +28,24 @@ class SongAvatar extends StatelessWidget {
       padding: EdgeInsets.all(imagePadding),
       child: CircleAvatar(
         backgroundColor: Color(0xff090504),
-        child: ClipOval(
-          child: Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: Image.asset(
-              '${songCoverPath ?? 'assets/cover/error404.png'}',
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
+        backgroundImage:
+            AssetImage('${songCoverPath ?? 'assets/cover/error404.png'}'),
         radius: radius,
       ),
+      // child: CircleAvatar(
+      //   backgroundColor: Color(0xff090504),
+      //   child: ClipOval(
+      //     child: Container(
+      //       height: double.infinity,
+      //       width: double.infinity,
+      //       child: Image.asset(
+      //         '${songCoverPath ?? 'assets/cover/error404.png'}',
+      //         fit: BoxFit.cover,
+      //       ),
+      //     ),
+      //   ),
+      //   radius: radius,
+      // ),
       decoration: BoxDecoration(
         color: AppTheme.primaryColor,
         borderRadius: BorderRadius.circular(radius),
