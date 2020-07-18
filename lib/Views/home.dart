@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_music_player/Models/songs_control_panel.dart';
+import 'package:simple_music_player/Widgets/song_brain.dart';
 import 'package:simple_music_player/appTheme.dart';
 import 'package:simple_music_player/widgets/button.dart';
 import 'package:simple_music_player/widgets/song_avatar.dart';
-import 'package:simple_music_player/widgets/song_brain.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -83,29 +83,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            showbottomAppBar
-                ? AnimatedOpacity(
-                    opacity: showbottomAppBar ? 1 : 0,
-                    duration: Duration(milliseconds: 400),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: 70,
-                        width: screenWidth,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              AppTheme.primaryColor.withOpacity(0.2),
-                              AppTheme.primaryColor.withOpacity(0.8),
-                            ],
-                          ),
-                        ),
+            Visibility(
+              // visible: showbottomAppBar,
+              visible: false,
+              child: AnimatedOpacity(
+                opacity: showbottomAppBar ? 1 : 0,
+                duration: Duration(milliseconds: 400),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 70,
+                    width: screenWidth,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppTheme.primaryColor.withOpacity(0.2),
+                          AppTheme.primaryColor.withOpacity(0.8),
+                        ],
                       ),
                     ),
-                  )
-                : Container(),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -173,27 +175,37 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
                   scale: sideButtonsScale,
                   child: Opacity(
                     opacity: sideButtonsOpacity,
-                    child: AudioPlayerButton(
-                      buttonRadius: 25,
-                      icon: Icons.favorite,
-                      iconSize: 15,
-                      onTap: () {
-                        print("favorite");
+                    child: DataProvider<RealtimePlayingInfos>(
+                      builder: (context, data) {
+                        return AudioPlayerButton(
+                          buttonRadius: 25,
+                          icon: Icons.favorite,
+                          iconSize: 15,
+                          onTap: () {
+                            //TODO: implement favorite.
+                            print("favorite");
+                          },
+                        );
                       },
                     ),
                   ),
                 ),
                 Opacity(
                   opacity: sideButtonsOpacity,
-                  child: SongAvatar(
-                    //TODO: fix song image path.
-                    // songCoverPath: Provider.of<SongsControlPanel>(context)
-                    //         .tempSongCoverPath ??
-                    //     'assets/fire_flower.jpg',
-                    songCoverPath: "assets/fire_flower.jpg",
-                    radius:
-                        _calculateShrinking(shrinkOffset, 80, speedFactor: 1.8),
-                    imagePadding: 4,
+                  child: DataProvider<RealtimePlayingInfos>(
+                    builder: (context, data) {
+                      return SongAvatar(
+                        songCoverPath:
+                            data?.current?.audio?.audio?.metas?.image?.path ??
+                                'assets/fire_flower.jpg',
+                        radius: _calculateShrinking(
+                          shrinkOffset,
+                          80,
+                          speedFactor: 1.8,
+                        ),
+                        imagePadding: 4,
+                      );
+                    },
                   ),
                 ),
                 Transform.scale(
@@ -204,7 +216,8 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
                       buttonRadius: 25,
                       icon: Icons.more_horiz,
                       onTap: () {
-                        print("see more");
+                        Provider.of<SongsControlPanel>(context, listen: false)
+                            .playPlaylist();
                       },
                     ),
                   ),

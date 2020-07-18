@@ -1,10 +1,9 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:simple_music_player/Models/songs_control_panel.dart';
 import 'package:simple_music_player/Views/home.dart';
 import 'package:simple_music_player/appTheme.dart';
-import 'models/songs_control_panel.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,9 +12,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: <SingleChildWidget>[
-        ChangeNotifierProvider(
-            create: (context) => SongsControlPanel(AssetsAudioPlayer())),
-        ChangeNotifierProvider(create: (context) => ShowAppbars()),
+        ChangeNotifierProvider<SongsControlPanel>(
+          create: (context) => SongsControlPanel(),
+        ),
+        ChangeNotifierProvider<ShowAppbars>(
+          create: (context) => ShowAppbars(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

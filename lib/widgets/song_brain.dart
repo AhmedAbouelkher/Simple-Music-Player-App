@@ -1,7 +1,9 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_music_player/models/songs_control_panel.dart';
+import 'package:simple_music_player/Models/page_transtion.dart';
+import 'package:simple_music_player/Models/songs_control_panel.dart';
+import 'package:simple_music_player/Views/player.dart';
 import 'package:simple_music_player/widgets/button.dart';
 import '../appTheme.dart';
 
@@ -24,40 +26,21 @@ class SongsListBuilder extends StatelessWidget {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final song = songData.songs[index];
-              // void _printReport() {
-              //   print("Current Index: $index, isPlaying: ${song.isPlaying}");
-              // }
-
-              return songData.assetsAudioPlayer.builderCurrent(
-                builder: (context, playing) {
-                  final bool isSelected = "assets/" + song.songPath ==
-                      playing?.audio?.assetAudioPath;
+              return songData.assetsAudioPlayer.builderRealtimePlayingInfos(
+                builder: (context, infos) {
+                  final playing = infos?.current;
+                  final bool isSelected =
+                      song.path == playing?.audio?.assetAudioPath;
                   return SongCard(
-                    songName: song.songName,
-                    songSubName: song.songSubName,
+                    songName: song.title,
+                    songSubName: song.artist,
                     onTap: () {
-                      if (!isSelected) {
-                        songData.play(index);
-                        songData.stop();
-                      } else {
-                        songData.playSong(index);
-                      }
-                      // Navigator.of(context).push(
-                      //   createRoute(
-                      //     Player(
-                      //       songName: song.songName,
-                      //       songSubName: song.songSubName,
-                      //       songFilePath: song.songPath,
-                      //       songCoverPath: song.songCoverPath,
-                      //     ),
-                      //   ),
-                      // );
+                      if (!isSelected) songData.play(index);
+                      Navigator.of(context).push(createRoute(Player()));
                     },
                     isSelected: isSelected,
-                    onTapButton: () {
-                      songData.playSong(index);
-                    },
-                    togglePlay: song.isPlaying,
+                    onTapButton: () => songData.playSong(index),
+                    togglePlay: isSelected && (infos?.isPlaying ?? false),
                   );
                 },
               );
@@ -90,7 +73,7 @@ class SongCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap(),
+      onTap: onTap,
       focusColor: Colors.transparent,
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
@@ -135,6 +118,62 @@ class SongCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+enum BuilderType { info, current, speed, playing }
+
+typedef RealtimeWidgetBuilder<T> = Widget Function(
+    BuildContext context, T data);
+
+class DataProvider<T> extends StatelessWidget {
+  final RealtimeWidgetBuilder<T> builder;
+  final Widget child;
+  final BuilderType builderType;
+  const DataProvider({
+    Key key,
+    @required this.builder,
+    this.child,
+    this.builderType = BuilderType.info,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<SongsControlPanel>(
+      builder: (context, value, child) {
+        switch (builderType) {
+          case BuilderType.info:
+            break;
+          case BuilderType.current:
+            return value.assetsAudioPlayer.builderCurrent(
+              builder: (context, playing) {
+                return builder(context, playing as T);
+              },
+            );
+            break;
+          case BuilderType.speed:
+            return value.assetsAudioPlayer.builderForwardRewindSpeed(
+              builder: (context, playSpeed) {
+                return builder(context, playSpeed as T);
+              },
+            );
+            break;
+          case BuilderType.playing:
+            return value.assetsAudioPlayer.builderIsPlaying(
+              builder: (context, isPlaying) {
+                return builder(context, isPlaying as T);
+              },
+            );
+            break;
+        }
+        return value.assetsAudioPlayer.builderRealtimePlayingInfos(
+          builder: (context, realtimePlayingInfos) {
+            return builder(context, realtimePlayingInfos as T);
+          },
+        );
+      },
+      child: child,
     );
   }
 }

@@ -4,113 +4,88 @@ import 'package:flutter/cupertino.dart';
 import 'package:simple_music_player/Models/song.dart';
 
 class SongsControlPanel extends ChangeNotifier {
-  final AssetsAudioPlayer _assetsAudioPlayer;
-  SongsControlPanel(this._assetsAudioPlayer);
+  AssetsAudioPlayer _assetsAudioPlayer;
+  SongsControlPanel() {
+    if (_assetsAudioPlayer == null) _assetsAudioPlayer = AssetsAudioPlayer();
+  }
   AssetsAudioPlayer get assetsAudioPlayer => _assetsAudioPlayer;
-  List<Song> _songs = [
-    Song(
-      songName: 'Little Idea',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-littleidea.mp3',
-      songCoverPath: 'assets/cover/littleidea.jpg',
-    ),
-    Song(
-      songName: 'Jazzy Frenchy',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-jazzyfrenchy.mp3',
-      songCoverPath: 'assets/cover/jazzyfrenchy.jpg',
-    ),
-    Song(
-      songName: 'Happy Rock',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-happyrock.mp3',
-      songCoverPath: 'assets/cover/happyrock.jpg',
-    ),
-    Song(
-      songName: 'Summer',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-summer.mp3',
-      songCoverPath: 'assets/cover/summer.jpg',
-    ),
-    Song(
-      songName: 'Ukulele',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-ukulele.mp3',
-      songCoverPath: 'assets/cover/ukulele.jpg',
-    ),
-    Song(
-      songName: 'a New Beginning',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-anewbeginning.mp3',
-      songCoverPath: 'assets/cover/anewbeginning.jpg',
-    ),
-    Song(
-      songName: 'Creative Minds',
-      songSubName: 'Benjamin Tissot',
-      songPath: 'music/bensound-creativeminds.mp3',
-      songCoverPath: 'assets/cover/creativeminds.jpg',
-    ),
-    // Song(
-    //   songName: 'Summer',
-    //   songSubName: 'Benjamin Tissot',
-    //   songPath: 'music/bensound-summer.mp3',
-    //   songCoverPath: 'assets/cover/summer.jpg',
-    // ),
-    // Song(
-    //   songName: 'Little Idea',
-    //   songSubName: 'Benjamin Tissot',
-    //   songPath: 'music/bensound-littleidea.mp3',
-    //   songCoverPath: 'assets/cover/littleidea.jpg',
-    // ),
-    // Song(
-    //   songName: 'Ukulele',
-    //   songSubName: 'Benjamin Tissot',
-    //   songPath: 'music/bensound-ukulele.mp3',
-    //   songCoverPath: 'assets/cover/ukulele.jpg',
-    // ),
-  ];
 
   UnmodifiableListView<Song> get songs {
     return UnmodifiableListView(_songs);
   }
 
-  int prevInedx = 0;
-  bool isStarted = false;
-  void selectSong(int index) {
-    if (!isStarted) {
-      prevInedx = index;
-      isStarted = true;
-    } else if (isStarted) {
-      final song = _songs[prevInedx];
-      if (song.isPlaying) song.togglePlay();
-      prevInedx = index;
-    }
-    notifyListeners();
-  }
-
   void playSong(int index) async {
-    songs[index].togglePlay();
     await this._assetsAudioPlayer?.playOrPause();
     notifyListeners();
   }
 
-  String tempSongCoverPath;
-  void changeHomeCover(int index) {
-    tempSongCoverPath = songs[index].songCoverPath;
-    notifyListeners();
+  void play(int index) async {
+    await this._assetsAudioPlayer?.stop();
+    await this._assetsAudioPlayer?.open(songs[index].audio, autoStart: true);
   }
 
-  void play(int index) async {
-    selectSong(index);
-    playSong(index);
-    changeHomeCover(index);
+  void playPlaylist() async {
+    List<Audio> _audio = [];
+    await this._assetsAudioPlayer?.stop();
+    for (var song in songs) {
+      _audio.add(song.audio);
+    }
     await this._assetsAudioPlayer?.open(
-          Audio("assets/" + songs[index].songPath),
-          autoStart: true,
+          Playlist(audios: _audio),
+          loopMode: LoopMode.playlist,
         );
   }
 
   void stop() async {
     await this._assetsAudioPlayer?.stop();
   }
+
+  void changeSpeed(double speed) async {
+    await this._assetsAudioPlayer.forwardOrRewind(speed);
+  }
+
+  List<Song> _songs = [
+    Song(
+      title: 'Little Idea',
+      artist: 'Benjamin Tissot',
+      path: 'assets/music/bensound-littleidea.mp3',
+      coverPath: 'assets/cover/littleidea.jpg',
+    ),
+    Song(
+      title: 'Jazzy Frenchy',
+      artist: 'Benjamin Tissot',
+      path: 'assets/music/bensound-jazzyfrenchy.mp3',
+      coverPath: 'assets/cover/jazzyfrenchy.jpg',
+    ),
+    Song(
+      title: 'Happy Rock',
+      artist: 'Benjamin Tissot',
+      path: 'assets/music/bensound-happyrock.mp3',
+      coverPath: 'assets/cover/happyrock.jpg',
+    ),
+    Song(
+      title: 'Summer',
+      artist: 'Benjamin Tissot',
+      path: 'assets/music/bensound-summer.mp3',
+      coverPath: 'assets/cover/summer.jpg',
+    ),
+    Song(
+      title: 'Ukulele',
+      artist: 'Benjamin Tissot',
+      path: 'assets/music/bensound-ukulele.mp3',
+      coverPath: 'assets/cover/ukulele.jpg',
+    ),
+    Song(
+      title: 'a New Beginning',
+      artist: 'Benjamin Tissot',
+      path: 'assets/music/bensound-anewbeginning.mp3',
+      coverPath: 'assets/cover/anewbeginning.jpg',
+    ),
+    Song(
+      title: 'Creative Minds',
+      artist: 'Benjamin Tissot',
+      path: 'assets/music/bensound-creativeminds.mp3',
+      coverPath: 'assets/cover/creativeminds.jpg',
+    ),
+  ];
 }
