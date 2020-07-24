@@ -1,12 +1,15 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_music_player/Models/songs_control_panel.dart';
-import 'package:simple_music_player/Widgets/song_brain.dart';
+import 'package:simple_music_player/Controllers/songs_control_panel.dart';
+import 'package:simple_music_player/Views/song_brain.dart';
+import 'package:simple_music_player/Widgets/buttom_panel_options.dart';
+import 'package:simple_music_player/Widgets/song_data_provider.dart';
 import 'package:simple_music_player/appTheme.dart';
 import 'package:simple_music_player/widgets/button.dart';
 import 'package:simple_music_player/widgets/song_avatar.dart';
+import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:social_share/social_share.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -50,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             NotificationListener<ScrollUpdateNotification>(
               onNotification: (_) {
-                _scrollContollerAction();
+                _scrollControllerAction();
                 return true;
               },
               child: CustomScrollView(
@@ -114,17 +117,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _scrollContollerAction() {
+  void _scrollControllerAction() {
     var position = _controller.position.pixels;
+    final provider = Provider.of<ShowAppbars>(context, listen: false);
     if (position > 265) {
-      Provider.of<ShowAppbars>(context, listen: false).showTopAppBar();
+      provider.showTopAppBar();
     } else {
-      Provider.of<ShowAppbars>(context, listen: false).hideTopAppBar();
+      provider.hideTopAppBar();
     }
     if (position == _controller.position.maxScrollExtent) {
-      Provider.of<ShowAppbars>(context, listen: false).hideBottomAppBar();
+      provider.hideBottomAppBar();
     } else {
-      Provider.of<ShowAppbars>(context, listen: false).showBottomAppBar();
+      provider.showBottomAppBar();
     }
   }
 }
@@ -177,13 +181,30 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
                     opacity: sideButtonsOpacity,
                     child: DataProvider<RealtimePlayingInfos>(
                       builder: (context, data) {
+                        if (data == null) {
+                          return AudioPlayerButton(
+                            buttonRadius: 25,
+                            icon: Icons.favorite,
+                            iconSize: 15,
+                            togglePlay: false,
+                            disable: true,
+                          );
+                        }
+                        final path = data.current.audio.assetAudioPath;
+                        final audioProvider =
+                            Provider.of<SongsControlPanel>(context);
+                        final bool togglePlay =
+                            audioProvider.getFavorite(path, hideDebug: true);
                         return AudioPlayerButton(
                           buttonRadius: 25,
                           icon: Icons.favorite,
                           iconSize: 15,
-                          onTap: () {
-                            //TODO: implement favorite.
-                            print("favorite");
+                          togglePlay: togglePlay,
+                          onTap: () async {
+                            final audioProvider =
+                                Provider.of<SongsControlPanel>(context,
+                                    listen: false);
+                            await audioProvider.saveFavorite(path, !togglePlay);
                           },
                         );
                       },
@@ -215,9 +236,14 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
                     child: AudioPlayerButton(
                       buttonRadius: 25,
                       icon: Icons.more_horiz,
-                      onTap: () {
-                        Provider.of<SongsControlPanel>(context, listen: false)
-                            .playPlaylist();
+                      onTap: () async {
+                        // Provider.of<SongsControlPanel>(context, listen: false)
+                        //     .playPlaylist();
+                        // await SocialShare.shareOptions("Hello world");
+                        // SocialShare.checkInstalledAppsForShare().then((data) {
+                        //   print(data.toString());
+                        // });
+                        MoreOptionsPanel().buildPanelSwitch(context);
                       },
                     ),
                   ),

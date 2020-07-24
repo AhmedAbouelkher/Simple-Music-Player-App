@@ -29,10 +29,25 @@ dependencies:
   audio_service: ^0.11.2
   assets_audio_player: ^2.0.8+2
   shared_preferences: ^0.5.8
+  social_share: ^2.0.5
+  flutter_platform_widgets: ^0.51.0
+  platform_action_sheet: ^0.0.3
+
+flutter_native_splash:
+  image: assets/SoundWaves.png
+  color: "#FAAF40"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/Icons/icon.png"
+  adaptive_icon_background: "#FAAF40"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^0.1.9
+  flutter_launcher_icons: "^0.7.3"
 
 
 # For information on the generic Dart part of this file, see the

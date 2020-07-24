@@ -1,18 +1,19 @@
 import 'dart:collection';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:simple_music_player/Helpers/SharedPerfsProvider.dart';
 import 'package:simple_music_player/Models/song.dart';
 
 class SongsControlPanel extends ChangeNotifier {
   AssetsAudioPlayer _assetsAudioPlayer;
+  PreferenceUtils _prefs;
   SongsControlPanel() {
     if (_assetsAudioPlayer == null) _assetsAudioPlayer = AssetsAudioPlayer();
+    if (_prefs == null) _prefs = PreferenceUtils.getInstance();
   }
   AssetsAudioPlayer get assetsAudioPlayer => _assetsAudioPlayer;
 
-  UnmodifiableListView<Song> get songs {
-    return UnmodifiableListView(_songs);
-  }
+  UnmodifiableListView<Song> get songs => UnmodifiableListView(_songs);
 
   void playSong(int index) async {
     await this._assetsAudioPlayer?.playOrPause();
@@ -28,7 +29,10 @@ class SongsControlPanel extends ChangeNotifier {
     List<Audio> _audio = [];
     await this._assetsAudioPlayer?.stop();
     for (var song in songs) {
-      _audio.add(song.audio);
+      if (song.audio.path != null) {
+        song.audio.updateMetas(album: "Mamma Mia");
+        _audio.add(song.audio);
+      }
     }
     await this._assetsAudioPlayer?.open(
           Playlist(audios: _audio),
@@ -42,6 +46,15 @@ class SongsControlPanel extends ChangeNotifier {
 
   void changeSpeed(double speed) async {
     await this._assetsAudioPlayer.forwardOrRewind(speed);
+  }
+
+  Future<void> saveFavorite(String path, bool value) async {
+    await _prefs.saveValueWithKey<bool>(path, value);
+  }
+
+  bool getFavorite(String path, {bool hideDebug = false}) {
+    final bool value = _prefs.getValueWithKey(path, hideDebugPrint: hideDebug);
+    return value ?? false;
   }
 
   List<Song> _songs = [
@@ -76,7 +89,7 @@ class SongsControlPanel extends ChangeNotifier {
       coverPath: 'assets/cover/ukulele.jpg',
     ),
     Song(
-      title: 'a New Beginning',
+      title: 'A New Beginning',
       artist: 'Benjamin Tissot',
       path: 'assets/music/bensound-anewbeginning.mp3',
       coverPath: 'assets/cover/anewbeginning.jpg',
@@ -88,4 +101,15 @@ class SongsControlPanel extends ChangeNotifier {
       coverPath: 'assets/cover/creativeminds.jpg',
     ),
   ];
+
+  void disposePlayer() async {
+    await this._assetsAudioPlayer?.dispose();
+  }
+
+  @override
+  void dispose() {
+    this._assetsAudioPlayer?.dispose();
+    print("Audio Controller was Disposed {{Change Notifier}}");
+    super.dispose();
+  }
 }
