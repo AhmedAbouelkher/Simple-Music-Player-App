@@ -159,9 +159,9 @@ class _PlayerState extends State<Player> with AfterLayoutMixin<Player> {
                     buttonRadius: 34,
                     icon: Icons.fast_rewind,
                     iconSize: 25,
-                    onTap: () =>
-                        Provider.of<SongsControlPanel>(context, listen: false)
-                            .changeSpeed(-2),
+                    // onTap: () =>
+                    //     Provider.of<SongsControlPanel>(context, listen: false)
+                    //         .changeSpeed(-2),
                     togglePlay: false,
                   ),
                   PlayerBuilder.isPlaying(
@@ -193,9 +193,9 @@ class _PlayerState extends State<Player> with AfterLayoutMixin<Player> {
                     buttonRadius: 34,
                     icon: Icons.fast_forward,
                     iconSize: 25,
-                    onTap: () =>
-                        Provider.of<SongsControlPanel>(context, listen: false)
-                            .changeSpeed(2),
+                    // onTap: () =>
+                    // Provider.of<SongsControlPanel>(context, listen: false)
+                    //     .changeSpeed(2),
                     togglePlay: false,
                   ),
                 ],

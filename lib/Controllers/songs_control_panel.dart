@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:simple_music_player/Helpers/SharedPerfsProvider.dart';
@@ -25,7 +26,7 @@ class SongsControlPanel extends ChangeNotifier {
     await this._assetsAudioPlayer?.open(songs[index].audio, autoStart: true);
   }
 
-  void playPlaylist() async {
+  void playPlaylist({bool shuffle = false}) async {
     List<Audio> _audio = [];
     await this._assetsAudioPlayer?.stop();
     for (var song in songs) {
@@ -34,6 +35,7 @@ class SongsControlPanel extends ChangeNotifier {
         _audio.add(song.audio);
       }
     }
+    _audio = shuffle ? _shuffle(_audio) : _audio;
     await this._assetsAudioPlayer?.open(
           Playlist(audios: _audio),
           loopMode: LoopMode.playlist,
@@ -55,6 +57,22 @@ class SongsControlPanel extends ChangeNotifier {
   bool getFavorite(String path, {bool hideDebug = false}) {
     final bool value = _prefs.getValueWithKey(path, hideDebugPrint: hideDebug);
     return value ?? false;
+  }
+
+  List _shuffle(List items) {
+    var random = new Random();
+
+    // Go through all elements.
+    for (var i = items.length - 1; i > 0; i--) {
+      // Pick a pseudorandom number according to the list length
+      var n = random.nextInt(i + 1);
+
+      var temp = items[i];
+      items[i] = items[n];
+      items[n] = temp;
+    }
+
+    return items;
   }
 
   List<Song> _songs = [

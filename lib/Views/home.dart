@@ -9,7 +9,6 @@ import 'package:simple_music_player/widgets/song_avatar.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:social_share/social_share.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,18 +16,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  ScrollController _controller;
+  ScrollController _scrollController;
   AssetsAudioPlayer _assetsAudioPlayer;
   @override
   void initState() {
-    _controller = ScrollController();
+    _scrollController = ScrollController();
     _assetsAudioPlayer = AssetsAudioPlayer();
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
@@ -57,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return true;
               },
               child: CustomScrollView(
-                controller: _controller,
+                controller: _scrollController,
                 slivers: <Widget>[
                   SliverPersistentHeader(
                     delegate: SongPlayingHeader(),
@@ -118,14 +117,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _scrollControllerAction() {
-    var position = _controller.position.pixels;
+    var position = _scrollController.position.pixels;
     final provider = Provider.of<ShowAppbars>(context, listen: false);
     if (position > 265) {
       provider.showTopAppBar();
     } else {
       provider.hideTopAppBar();
     }
-    if (position == _controller.position.maxScrollExtent) {
+    if (position == _scrollController.position.maxScrollExtent) {
       provider.hideBottomAppBar();
     } else {
       provider.showBottomAppBar();
@@ -236,15 +235,7 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
                     child: AudioPlayerButton(
                       buttonRadius: 25,
                       icon: Icons.more_horiz,
-                      onTap: () async {
-                        // Provider.of<SongsControlPanel>(context, listen: false)
-                        //     .playPlaylist();
-                        // await SocialShare.shareOptions("Hello world");
-                        // SocialShare.checkInstalledAppsForShare().then((data) {
-                        //   print(data.toString());
-                        // });
-                        MoreOptionsPanel().buildPanelSwitch(context);
-                      },
+                      onTap: () => MoreOptionsPanel().buildPanelSwitch(context),
                     ),
                   ),
                 ),

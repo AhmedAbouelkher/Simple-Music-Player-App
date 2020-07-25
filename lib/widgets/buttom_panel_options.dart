@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:platform_action_sheet/platform_action_sheet.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_music_player/Controllers/songs_control_panel.dart';
 
 class MoreOptionsPanel {
   buildPanelSwitch(BuildContext context) {
@@ -21,37 +23,41 @@ class MoreOptionsPanel {
   }
 
   Widget _cupertinoSheetContent(BuildContext context) {
+    final sondProvider = Provider.of<SongsControlPanel>(context, listen: false);
     return CupertinoActionSheet(
       title: Text(
-        'Control Panel Users',
-        style: Theme.of(context).textTheme.headline6,
+        'More options',
+        style: TextStyle(
+          fontSize: 14,
+        ),
       ),
-      message: const Text(
-          'Please select the panel users type from the options below.'),
       actions: <Widget>[
         CupertinoActionSheetAction(
           child: const Text(
             'Shuffle',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            sondProvider.playPlaylist(shuffle: true);
+            Navigator.pop(context);
+          },
         ),
         CupertinoActionSheetAction(
           child: const Text(
-            'Agents',
+            'Share',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
         ),
       ],
       cancelButton: CupertinoActionSheetAction(
         child: const Text('Cancel'),
         isDefaultAction: true,
-        onPressed: () {},
+        onPressed: () => Navigator.pop(context),
       ),
     );
   }
@@ -63,17 +69,10 @@ class MoreOptionsPanel {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Text(
-            'Control Panel Users',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-        ),
-      ),
-      message: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Center(
-          child: const Text(
-            'Please select the panel users type from the options below.',
-            textAlign: TextAlign.center,
+            'More options',
+            style: TextStyle(
+              fontSize: 14,
+            ),
           ),
         ),
       ),
@@ -83,7 +82,7 @@ class MoreOptionsPanel {
           onPressed: () {},
         ),
         ActionSheetAction(
-          text: "Agents",
+          text: "Share",
           onPressed: () {},
         ),
         ActionSheetAction(
