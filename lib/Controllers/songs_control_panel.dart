@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:math';
 import 'package:assets_audio_player/assets_audio_player.dart';
@@ -7,6 +8,9 @@ import 'package:simple_music_player/Models/song.dart';
 
 class SongsControlPanel extends ChangeNotifier {
   AssetsAudioPlayer _assetsAudioPlayer;
+  StreamSubscription<RealtimePlayingInfos> _currentSongStream;
+  PlayingAudio _currentSong;
+  PlayingAudio get currentSong => _currentSong;
   PreferenceUtils _prefs;
   SongsControlPanel() {
     if (_assetsAudioPlayer == null) _assetsAudioPlayer = AssetsAudioPlayer();
@@ -24,6 +28,19 @@ class SongsControlPanel extends ChangeNotifier {
   void play(int index) async {
     await this._assetsAudioPlayer?.stop();
     await this._assetsAudioPlayer?.open(songs[index].audio, autoStart: true);
+  }
+
+  void updateCurrentPlayingAudio() {
+    _currentSongStream =
+        _assetsAudioPlayer?.realtimePlayingInfos?.listen((info) {
+      if (info != null) {
+        if (info.current.audio.audio.metas.image.path !=
+            _currentSong?.audio?.metas?.image?.path) {
+          _currentSong = info.current.audio;
+          notifyListeners();
+        }
+      }
+    });
   }
 
   void playPlaylist({bool shuffle = false}) async {
@@ -128,6 +145,7 @@ class SongsControlPanel extends ChangeNotifier {
   void dispose() {
     this._assetsAudioPlayer?.dispose();
     print("Audio Controller was Disposed {{Change Notifier}}");
+    _currentSongStream?.cancel();
     super.dispose();
   }
 }

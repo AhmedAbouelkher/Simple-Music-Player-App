@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     bool showTopAppBar = Provider.of<ShowAppbars>(context).showTopAppbar;
     bool showbottomAppBar = Provider.of<ShowAppbars>(context).showBottomAppbar;
+    Provider.of<SongsControlPanel>(context).updateCurrentPlayingAudio();
     return Scaffold(
       backgroundColor: Color(0xFF343A3F),
       appBar: PreferredSize(
@@ -235,7 +236,9 @@ class SongPlayingHeader implements SliverPersistentHeaderDelegate {
                     child: AudioPlayerButton(
                       buttonRadius: 25,
                       icon: Icons.more_horiz,
-                      onTap: () => MoreOptionsPanel().buildPanelSwitch(context),
+                      onTap: () {
+                        MoreOptionsPanel().buildPanelSwitch(context);
+                      },
                     ),
                   ),
                 ),

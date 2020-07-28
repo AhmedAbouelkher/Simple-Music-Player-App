@@ -34,6 +34,18 @@ class MoreOptionsPanel {
       actions: <Widget>[
         CupertinoActionSheetAction(
           child: const Text(
+            'Playlist',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          onPressed: () {
+            sondProvider.playPlaylist();
+            Navigator.pop(context);
+          },
+        ),
+        CupertinoActionSheetAction(
+          child: const Text(
             'Shuffle',
             style: TextStyle(
               color: Colors.white,
@@ -44,15 +56,26 @@ class MoreOptionsPanel {
             Navigator.pop(context);
           },
         ),
-        CupertinoActionSheetAction(
-          child: const Text(
-            'Share',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
+        // CupertinoActionSheetAction(
+        //   child: const Text(
+        //     'Share',
+        //     style: TextStyle(
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        //   onPressed: () async {
+        //     final provider =
+        //         Provider.of<SongsControlPanel>(context, listen: false);
+        //     final metas = provider?.currentSong?.audio?.metas;
+        //     if (metas?.title != null) {
+        //       await SocialShare.shareOptions(
+        //         metas.title,
+        //         imagePath: metas.image.path,
+        //       );
+        //     }
+        //     Navigator.pop(context);
+        //   },
+        // )
       ],
       cancelButton: CupertinoActionSheetAction(
         child: const Text('Cancel'),
@@ -63,6 +86,7 @@ class MoreOptionsPanel {
   }
 
   void _androidPopupContent(BuildContext context) {
+    final sondProvider = Provider.of<SongsControlPanel>(context, listen: false);
     return PlatformActionSheet().displaySheet(
       context: context,
       title: Center(
@@ -78,13 +102,23 @@ class MoreOptionsPanel {
       ),
       actions: [
         ActionSheetAction(
-          text: "Shuffle",
-          onPressed: () {},
+          text: "Playlist",
+          onPressed: () {
+            sondProvider.playPlaylist();
+            Navigator.pop(context);
+          },
         ),
         ActionSheetAction(
-          text: "Share",
-          onPressed: () {},
+          text: "Shuffle",
+          onPressed: () {
+            sondProvider.playPlaylist(shuffle: true);
+            Navigator.pop(context);
+          },
         ),
+        // ActionSheetAction(
+        //   text: "share",
+        //   onPressed: () {},
+        // ),
         ActionSheetAction(
           text: "Cancel",
           onPressed: () => Navigator.pop(context),
